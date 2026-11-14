@@ -1,149 +1,342 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101016">
-  <title>Glow Up — Fitness & Habit Tracker</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { colors: { ink: '#101016', panel: '#191922', line: '#2a2a37', violet: '#8b7cff', mint: '#71e2bd' } } } };
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'DM Sans', sans-serif; }
-    button, input, select, textarea { font: inherit; }
-    .calendar-day { min-height: 92px; }
-    @media (max-width: 640px) { .calendar-day { min-height: 65px; padding: 6px !important; } }
-  </style>
-</head>
-<body class="min-h-screen bg-ink text-slate-100 selection:bg-violet selection:text-white">
-  <header class="sticky top-0 z-30 border-b border-line bg-ink/90 backdrop-blur">
-    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-      <a href="#" class="flex items-center gap-3" aria-label="Glow Up home">
-        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-violet text-xl font-extrabold text-white">G</span>
-        <span><span class="block text-lg font-extrabold tracking-tight">Glow Up</span><span class="block text-xs text-slate-400">Small steps. Strong habits.</span></span>
-      </a>
-      <nav class="flex gap-1 rounded-xl border border-line bg-panel p-1" aria-label="Main navigation">
-        <button data-tab="dashboard" class="nav-btn rounded-lg bg-violet px-3 py-2 text-sm font-semibold text-white">Overview</button>
-        <button data-tab="calendar" class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5">Calendar</button>
-        <button data-tab="workouts" class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5">Workouts</button>
-        <button data-tab="nutrition" class="nav-btn rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-white/5">Nutrition</button>
-      </nav>
-    </div>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gabe — Glow Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --bg: #f3f3f3;
+        --panel: #1d1d1f;
+        --panel-soft: #2a2a2d;
+        --text: #111111;
+        --muted: #5d5d5d;
+        --line: rgba(17,17,17,0.12);
+      }
 
-  <main class="mx-auto max-w-7xl space-y-6 px-4 py-7 pb-24 sm:px-6">
-    <section id="dashboard" class="tab space-y-6">
-      <div class="overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-panel via-panel to-violet/20 p-6 sm:p-8">
-        <p class="mb-2 text-sm font-semibold text-violet">YOUR PROGRESS, YOUR PACE</p>
-        <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <div><h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">Build a routine that feels good.</h1><p class="mt-2 max-w-2xl text-slate-300">Track calisthenics, meals, and the little wins that add up. Your entries stay saved in this browser.</p></div>
-          <button id="quick-log" class="rounded-xl bg-violet px-5 py-3 font-bold text-white hover:bg-violet/85">＋ Log today</button>
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .phone {
+        width: 100%;
+        max-width: 430px;
+        min-height: 100vh;
+        background: #f3f3f3;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .statusbar {
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px 0 18px;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #111;
+      }
+
+      .status-right,
+      .status-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .status-right .dot-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .status-right .dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 999px;
+        background: #111;
+      }
+
+      .status-right .wifi {
+        position: relative;
+        width: 14px;
+        height: 10px;
+        border: 2px solid #111;
+        border-top: 0;
+        border-radius: 0 0 10px 10px;
+        transform: translateY(-1px);
+      }
+      .status-right .wifi::before {
+        content: "";
+        position: absolute;
+        inset: 2px 2px auto 2px;
+        height: 5px;
+        border: 2px solid #111;
+        border-top: 0;
+        border-radius: 0 0 8px 8px;
+      }
+
+      .urlbar-wrap {
+        padding: 0 14px 12px;
+      }
+
+      .urlbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: #2a2a2d;
+        border-radius: 22px;
+        height: 54px;
+        padding: 0 12px 0 14px;
+        color: #f3f3f3;
+      }
+
+      .url-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        flex: 1;
+      }
+
+      .lock {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.9);
+        position: relative;
+        flex-shrink: 0;
+      }
+      .lock::before {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border: 2px solid rgba(255,255,255,0.9);
+        border-radius: 2px;
+      }
+
+      .url-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        opacity: 0.95;
+      }
+
+      .plus-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.85);
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        line-height: 1;
+        color: #f4f4f4;
+        flex-shrink: 0;
+      }
+
+      .badge {
+        min-width: 34px;
+        height: 22px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.12);
+        color: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 0 8px;
+      }
+
+      .more {
+        width: 12px;
+        height: 12px;
+        position: relative;
+        opacity: 0.9;
+      }
+      .more::before,
+      .more::after,
+      .more span {
+        content: "";
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: #f3f3f3;
+        border-radius: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .more::before { top: 0; }
+      .more span { top: 4px; }
+      .more::after { top: 8px; }
+
+      .content {
+        padding: 20px 0 0;
+      }
+
+      .title {
+        font-size: clamp(4.2rem, 10vw, 6rem);
+        line-height: 0.9;
+        letter-spacing: -0.06em;
+        font-weight: 900;
+        margin: 0 0 28px 0;
+        padding-left: 16px;
+      }
+
+      .subtitle {
+        margin: 0;
+        padding-left: 16px;
+        max-width: 360px;
+        font-size: clamp(2.2rem, 6vw, 3.5rem);
+        line-height: 0.96;
+        letter-spacing: -0.06em;
+        font-weight: 500;
+      }
+
+      .bottom-nav {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 46px 18px 46px;
+        background: transparent;
+      }
+
+      .nav-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        color: #111;
+      }
+
+      .nav-icon.active {
+        background: rgba(17,17,17,0.06);
+      }
+
+      .nav-icon.grid {
+        width: 34px;
+        height: 34px;
+        position: relative;
+      }
+      .nav-icon.grid::before,
+      .nav-icon.grid::after,
+      .nav-icon.grid span::before,
+      .nav-icon.grid span::after {
+        content: "";
+        position: absolute;
+        background: #111;
+        border-radius: 2px;
+      }
+      .nav-icon.grid::before { width: 3px; height: 16px; left: 5px; top: 9px; }
+      .nav-icon.grid::after { width: 16px; height: 3px; left: 9px; top: 5px; }
+      .nav-icon.grid span::before { width: 3px; height: 16px; right: 5px; top: 9px; }
+      .nav-icon.grid span::after { width: 16px; height: 3px; right: 9px; top: 19px; }
+
+      .nav-icon circle,
+      .nav-icon path,
+      .nav-icon polyline,
+      .nav-icon line {
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .nav-icon svg { width: 30px; height: 30px; }
+      .nav-icon.ghost {
+        color: rgba(17,17,17,0.5);
+      }
+      .nav-icon.center {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: rgba(17, 17, 17, 0.04);
+      }
+      .nav-icon.center svg { width: 34px; height: 34px; }
+    </style>
+  </head>
+  <body>
+    <div class="phone">
+      <div class="statusbar" aria-label="Status bar">
+        <div class="status-left"><span>12:31</span></div>
+        <div class="status-right">
+          <div class="dot-group">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="wifi" aria-hidden="true"></div>
+          <span>5G</span>
+          <span>•</span>
+          <span>79</span>
         </div>
       </div>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <article class="card rounded-2xl border border-line bg-panel p-5"><p class="text-sm text-slate-400">Workouts this week</p><p id="week-workouts" class="mt-2 text-3xl font-extrabold">0</p><p class="mt-1 text-xs text-slate-500">Keep showing up</p></article>
-        <article class="card rounded-2xl border border-line bg-panel p-5"><p class="text-sm text-slate-400">Meals logged today</p><p id="today-meals" class="mt-2 text-3xl font-extrabold">0</p><p class="mt-1 text-xs text-slate-500">A gentle nudge, not a rule</p></article>
-        <article class="card rounded-2xl border border-line bg-panel p-5"><p class="text-sm text-slate-400">Water today</p><p class="mt-2 text-3xl font-extrabold"><span id="water-count">0</span><span class="text-base font-medium text-slate-400"> / 8 glasses</span></p><button id="water-add" class="mt-2 text-sm font-semibold text-mint hover:underline">＋ Add a glass</button></article>
-        <article class="card rounded-2xl border border-line bg-panel p-5"><p class="text-sm text-slate-400">Latest weight</p><p id="latest-weight" class="mt-2 text-3xl font-extrabold">—</p><p class="mt-1 text-xs text-slate-500">Optional check-in</p></article>
+
+      <div class="urlbar-wrap">
+        <div class="urlbar" aria-label="Address bar">
+          <div class="url-left">
+            <span class="lock" aria-hidden="true"></span>
+            <span class="url-text">spoopycrow.github.io</span>
+          </div>
+          <div class="plus-btn" aria-label="Add">+</div>
+          <div class="badge">23</div>
+          <div class="more" aria-label="More options"><span></span></div>
+        </div>
       </div>
-      <div class="grid gap-6 lg:grid-cols-2">
-        <section class="rounded-2xl border border-line bg-panel p-5"><div class="mb-4 flex items-center justify-between"><div><h2 class="text-lg font-bold">Today's goals</h2><p class="text-sm text-slate-400">Pick a few things that feel doable.</p></div><button id="add-goal" class="rounded-lg border border-line px-3 py-2 text-sm hover:bg-white/5">＋ Goal</button></div><div id="goals-list" class="space-y-2"></div></section>
-        <section class="rounded-2xl border border-line bg-panel p-5"><div class="mb-4 flex items-center justify-between"><div><h2 class="text-lg font-bold">Recent activity</h2><p class="text-sm text-slate-400">Your latest check-ins.</p></div><button data-goto="calendar" class="text-sm font-semibold text-violet hover:underline">View calendar →</button></div><div id="activity-list" class="space-y-2"></div></section>
-      </div>
-    </section>
 
-    <section id="calendar" class="tab hidden space-y-5">
-      <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-sm font-semibold text-violet">YOUR CONSISTENCY</p><h1 class="text-3xl font-extrabold">Calendar</h1><p class="mt-1 text-slate-400">Select a day to add a workout, meal, or weight check-in.</p></div><div class="flex items-center gap-3 rounded-xl border border-line bg-panel p-2"><button id="prev-month" class="rounded-lg px-3 py-2 hover:bg-white/5" aria-label="Previous month">←</button><strong id="month-label" class="min-w-32 text-center"></strong><button id="next-month" class="rounded-lg px-3 py-2 hover:bg-white/5" aria-label="Next month">→</button></div></div>
-      <div class="rounded-2xl border border-line bg-panel p-3 sm:p-5"><div class="mb-2 grid grid-cols-7 text-center text-xs font-bold uppercase text-slate-500"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div id="calendar-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2"></div></div>
-      <div id="selected-day-panel" class="rounded-2xl border border-line bg-panel p-5"></div>
-    </section>
+      <main class="content">
+        <h1 class="title">Gabe</h1>
+        <p class="subtitle">Glow Up fitness, nutrition, and calendar tracking app</p>
+      </main>
 
-    <section id="workouts" class="tab hidden space-y-5">
-      <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="text-sm font-semibold text-violet">MOVE YOUR WAY</p><h1 class="text-3xl font-extrabold">Calisthenics</h1><p class="mt-1 text-slate-400">Choose a routine and mark it complete when you're done.</p></div><button id="new-routine" class="rounded-xl bg-violet px-4 py-3 font-bold hover:bg-violet/85">＋ Create routine</button></div>
-      <div id="routine-list" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
-    </section>
+      <nav class="bottom-nav" aria-label="Bottom navigation">
+        <div class="nav-icon active" aria-label="Menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6.5h18M3 12h18M3 17.5h12" />
+          </svg>
+        </div>
 
-    <section id="nutrition" class="tab hidden space-y-5">
-      <div><p class="text-sm font-semibold text-violet">FUEL YOUR DAY</p><h1 class="text-3xl font-extrabold">Nutrition</h1><p class="mt-1 text-slate-400">Log meals and optional calorie estimates. This is a personal tracker, not medical advice.</p></div>
-      <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-        <form id="meal-form" class="space-y-4 rounded-2xl border border-line bg-panel p-5"><h2 class="text-lg font-bold">Add a meal</h2><label class="block text-sm text-slate-300">Meal or snack<input id="meal-name" required maxlength="100" placeholder="e.g. Yogurt and fruit" class="mt-1 w-full rounded-xl border border-line bg-ink px-3 py-2.5 text-white placeholder:text-slate-600"></label><label class="block text-sm text-slate-300">Calories (optional)<input id="meal-cals" type="number" min="0" max="10000" placeholder="Estimate" class="mt-1 w-full rounded-xl border border-line bg-ink px-3 py-2.5 text-white placeholder:text-slate-600"></label><label class="block text-sm text-slate-300">Date<input id="meal-date" type="date" class="mt-1 w-full rounded-xl border border-line bg-ink px-3 py-2.5 text-white"></label><button class="w-full rounded-xl bg-violet px-4 py-3 font-bold hover:bg-violet/85">Save meal</button></form>
-        <section class="rounded-2xl border border-line bg-panel p-5"><div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-lg font-bold">Meal log</h2><p class="text-sm text-slate-400">Calories are optional estimates; no AI analysis is performed.</p></div><label class="text-sm text-slate-400">Date <input id="nutrition-date" type="date" class="ml-1 rounded-lg border border-line bg-ink px-2 py-1.5 text-white"></label></div><div id="meal-list" class="space-y-2"></div><p id="calorie-total" class="mt-4 border-t border-line pt-4 text-sm text-slate-300"></p></section>
-      </div>
-    </section>
-  </main>
+        <div class="nav-icon center ghost" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 10.5 12 3l9 7.5"></path>
+            <path d="M5 9.5V20h14V9.5"></path>
+          </svg>
+        </div>
 
-  <div id="toast" role="status" aria-live="polite" class="fixed bottom-5 left-1/2 z-50 hidden -translate-x-1/2 rounded-xl border border-line bg-panel px-4 py-3 text-sm shadow-xl"></div>
-  <script>
-    const todayKey = () => new Date().toLocaleDateString('en-CA');
-    const defaultState = () => ({ logs: {}, goals: [{ text: 'Move my body', done: false }, { text: 'Eat something nourishing', done: false }, { text: 'Take a moment to recharge', done: false }], water: {}, routines: [
-      { id: 'push', name: 'Push & core', category: 'Upper body', exercises: ['Incline push-ups · 3 × 8', 'Knee or standard push-ups · 3 × 6', 'Plank · 3 × 20 sec'] },
-      { id: 'legs', name: 'Legs & balance', category: 'Lower body', exercises: ['Bodyweight squats · 3 × 10', 'Reverse lunges · 3 × 8 each side', 'Glute bridges · 3 × 12'] },
-      { id: 'pull', name: 'Pull & posture', category: 'Upper body', exercises: ['Rows (with a safe setup) · 3 × 8', 'Prone Y raises · 3 × 10', 'Dead bug · 3 × 8 each side'] }
-    ] });
-    let state;
-    try { state = JSON.parse(localStorage.getItem('glow-up-state')) || defaultState(); } catch { state = defaultState(); }
-    let viewDate = new Date();
-    let selectedDate = todayKey();
-    const save = () => localStorage.setItem('glow-up-state', JSON.stringify(state));
-    const dayLog = date => state.logs[date] || { workouts: [], meals: [], weight: '' };
-    const escapeHTML = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-    function toast(message) { const el = document.getElementById('toast'); el.textContent = message; el.classList.remove('hidden'); clearTimeout(toast.timer); toast.timer = setTimeout(() => el.classList.add('hidden'), 2400); }
-    function ensureLog(date) { if (!state.logs[date]) state.logs[date] = { workouts: [], meals: [], weight: '' }; return state.logs[date]; }
-    function showTab(id) { document.querySelectorAll('.tab').forEach(el => el.classList.toggle('hidden', el.id !== id)); document.querySelectorAll('.nav-btn').forEach(el => { const active = el.dataset.tab === id; el.classList.toggle('bg-violet', active); el.classList.toggle('text-white', active); el.classList.toggle('text-slate-300', !active); }); if (id === 'calendar') renderCalendar(); }
-    function renderDashboard() {
-      const log = dayLog(todayKey());
-      const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - 6); weekStart.setHours(0,0,0,0);
-      let workouts = 0;
-      Object.entries(state.logs).forEach(([date, item]) => { if (new Date(date + 'T00:00:00') >= weekStart) workouts += (item.workouts || []).length; });
-      document.getElementById('week-workouts').textContent = workouts;
-      document.getElementById('today-meals').textContent = (log.meals || []).length;
-      document.getElementById('water-count').textContent = state.water[todayKey()] || 0;
-      document.getElementById('latest-weight').textContent = log.weight ? `${log.weight} lb` : '—';
-      document.getElementById('goals-list').innerHTML = state.goals.map((goal, i) => `<label class="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-ink/50 p-3"><input type="checkbox" data-goal="${i}" ${goal.done ? 'checked' : ''} class="h-4 w-4 accent-violet"><span class="text-sm ${goal.done ? 'text-slate-500 line-through' : 'text-slate-200'}">${escapeHTML(goal.text)}</span><button type="button" data-delete-goal="${i}" class="ml-auto px-2 text-slate-500 hover:text-red-300" aria-label="Remove goal">×</button></label>`).join('') || '<p class="text-sm text-slate-500">Add a small goal to get started.</p>';
-      document.getElementById('activity-list').innerHTML = Object.entries(state.logs).sort(([a],[b]) => b.localeCompare(a)).slice(0,5).map(([date, item]) => { const count = (item.workouts || []).length; const meals = (item.meals || []).length; return `<div class="flex items-center justify-between rounded-xl border border-line bg-ink/50 p-3"><span class="text-sm text-slate-200">${escapeHTML(date)}</span><span class="text-xs text-slate-400">${count} workout${count===1?'':'s'} · ${meals} meal${meals===1?'':'s'}</span></div>`; }).join('') || '<p class="text-sm text-slate-500">Your check-ins will appear here.</p>';
-    }
-    function renderCalendar() {
-      const year = viewDate.getFullYear(), month = viewDate.getMonth();
-      document.getElementById('month-label').textContent = viewDate.toLocaleDateString(undefined, {month:'long', year:'numeric'});
-      const first = new Date(year, month, 1).getDay(), days = new Date(year, month + 1, 0).getDate();
-      let cells = Array.from({length:first}, () => '<div aria-hidden="true"></div>');
-      for (let d=1; d<=days; d++) { const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const log = dayLog(key); const active = key === selectedDate; cells.push(`<button data-date="${key}" class="calendar-day rounded-xl border ${active?'border-violet bg-violet/10':'border-line bg-ink/50 hover:border-violet/60'} p-2 text-left"><span class="text-sm font-bold">${d}</span><span class="mt-1 block text-[10px] leading-4 text-slate-400">${(log.workouts||[]).length ? '💪 Workout' : ''}${(log.meals||[]).length ? `${(log.workouts||[]).length?' · ':''}🍽 ${log.meals.length}` : ''}${log.weight ? '<br>⚖ Check-in' : ''}</span></button>`); }
-      document.getElementById('calendar-grid').innerHTML = cells.join('');
-      renderSelectedDay();
-    }
-    function renderSelectedDay() {
-      const log = dayLog(selectedDate);
-      document.getElementById('selected-day-panel').innerHTML = `<div class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-lg font-bold">${escapeHTML(new Date(selectedDate+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'}))}</h2><p class="text-sm text-slate-400">${(log.workouts||[]).length} workouts · ${(log.meals||[]).length} meals</p></div><div class="flex flex-wrap gap-2"><button data-day-workout class="rounded-lg border border-line px-3 py-2 text-sm hover:bg-white/5">＋ Workout</button><button data-day-meal class="rounded-lg border border-line px-3 py-2 text-sm hover:bg-white/5">＋ Meal</button><button data-day-weight class="rounded-lg border border-line px-3 py-2 text-sm hover:bg-white/5">⚖ Weight</button></div></div><div class="mt-3 space-y-1 text-sm text-slate-300">${(log.workouts||[]).map(id => `<p>💪 ${escapeHTML(state.routines.find(r=>r.id===id)?.name || 'Workout')}</p>`).join('')}${(log.meals||[]).map(m => `<p>🍽 ${escapeHTML(m.name)}${m.cals ? ` · ${m.cals} kcal` : ''}</p>`).join('')}${log.weight ? `<p>⚖ ${escapeHTML(log.weight)} lb</p>` : ''}</div>`;
-    }
-    function renderRoutines() { document.getElementById('routine-list').innerHTML = state.routines.map(r => `<article class="rounded-2xl border border-line bg-panel p-5"><div class="mb-4 flex items-start justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-wide text-violet">${escapeHTML(r.category)}</p><h2 class="mt-1 text-lg font-bold">${escapeHTML(r.name)}</h2></div><button data-remove-routine="${escapeHTML(r.id)}" class="text-slate-500 hover:text-red-300" aria-label="Delete routine">×</button></div><ul class="space-y-2 text-sm text-slate-300">${r.exercises.map(ex => `<li>• ${escapeHTML(ex)}</li>`).join('')}</ul><button data-complete="${escapeHTML(r.id)}" class="mt-5 w-full rounded-xl bg-violet/15 px-4 py-3 text-sm font-bold text-violet hover:bg-violet/25">Mark complete today</button></article>`).join(''); }
-    function renderMeals() { const date = document.getElementById('nutrition-date').value || todayKey(); const meals = dayLog(date).meals || []; document.getElementById('meal-list').innerHTML = meals.map((m,i) => `<div class="flex items-center justify-between gap-3 rounded-xl border border-line bg-ink/50 p-3"><div><p class="font-semibold">${escapeHTML(m.name)}</p><p class="text-xs text-slate-400">${m.cals ? `${m.cals} kcal (estimate)` : 'No calorie estimate'}</p></div><button data-delete-meal="${i}" class="text-sm text-slate-500 hover:text-red-300">Remove</button></div>`).join('') || '<p class="text-sm text-slate-500">No meals logged for this day yet.</p>'; const total = meals.reduce((sum,m)=>sum+(Number(m.cals)||0),0); document.getElementById('calorie-total').textContent = `Estimated total: ${total} kcal`; }
-    document.addEventListener('click', event => {
-      const tab = event.target.closest('[data-tab]'); if (tab) showTab(tab.dataset.tab);
-      const goto = event.target.closest('[data-goto]'); if (goto) showTab(goto.dataset.goto);
-      const dateBtn = event.target.closest('[data-date]'); if (dateBtn) { selectedDate = dateBtn.dataset.date; renderCalendar(); }
-      if (event.target.closest('#prev-month')) { viewDate.setMonth(viewDate.getMonth()-1); renderCalendar(); }
-      if (event.target.closest('#next-month')) { viewDate.setMonth(viewDate.getMonth()+1); renderCalendar(); }
-      if (event.target.closest('#quick-log')) { selectedDate=todayKey(); showTab('calendar'); renderCalendar(); }
-      if (event.target.closest('#water-add')) { state.water[todayKey()] = Math.min(20, (state.water[todayKey()]||0)+1); save(); renderDashboard(); }
-      if (event.target.closest('#add-goal')) { const text = prompt('What small goal would you like to add?'); if (text && text.trim()) { state.goals.push({text:text.trim().slice(0,100),done:false}); save(); renderDashboard(); } }
-      const deleteGoal = event.target.closest('[data-delete-goal]'); if (deleteGoal) { state.goals.splice(Number(deleteGoal.dataset.deleteGoal),1); save(); renderDashboard(); }
-      if (event.target.closest('[data-day-workout]')) { const choices = state.routines.map((r,i)=>`${i+1}. ${r.name}`).join('\n'); const answer = prompt(`Choose a routine number:\n${choices}`); const routine=state.routines[Number(answer)-1]; if (routine) { const log=ensureLog(selectedDate); if (!log.workouts.includes(routine.id)) log.workouts.push(routine.id); save(); renderAll(); toast('Workout logged!'); } }
-      if (event.target.closest('[data-day-meal]')) { showTab('nutrition'); document.getElementById('meal-date').value=selectedDate; document.getElementById('nutrition-date').value=selectedDate; renderMeals(); }
-      if (event.target.closest('[data-day-weight]')) { const weight=prompt('Weight in pounds (optional):'); if (weight && Number(weight)>0) { ensureLog(selectedDate).weight=Number(weight).toFixed(1); save(); renderAll(); } }
-      const complete = event.target.closest('[data-complete]'); if (complete) { const log=ensureLog(todayKey()); if (!log.workouts.includes(complete.dataset.complete)) log.workouts.push(complete.dataset.complete); save(); renderAll(); toast('Workout logged!'); }
-      const removeRoutine = event.target.closest('[data-remove-routine]'); if (removeRoutine && confirm('Delete this routine?')) { state.routines=state.routines.filter(r=>r.id!==removeRoutine.dataset.removeRoutine); save(); renderRoutines(); }
-      const delMeal = event.target.closest('[data-delete-meal]'); if (delMeal) { const date=document.getElementById('nutrition-date').value||todayKey(); ensureLog(date).meals.splice(Number(delMeal.dataset.deleteMeal),1); save(); renderMeals(); renderDashboard(); }
-    });
-    document.addEventListener('change', event => { const cb=event.target.closest('[data-goal]'); if (cb) { state.goals[Number(cb.dataset.goal)].done=cb.checked; save(); renderDashboard(); } if (event.target.id==='nutrition-date') renderMeals(); });
-    document.getElementById('meal-form').addEventListener('submit', event => { event.preventDefault(); const date=document.getElementById('meal-date').value||todayKey(); const name=document.getElementById('meal-name').value.trim(); const raw=document.getElementById('meal-cals').value; ensureLog(date).meals.push({name,cals:raw?Number(raw):0}); save(); event.target.reset(); document.getElementById('meal-date').value=date; document.getElementById('nutrition-date').value=date; renderMeals(); renderDashboard(); toast('Meal saved.'); });
-    document.getElementById('new-routine').addEventListener('click', () => { const name=prompt('Routine name?'); if (!name || !name.trim()) return; const exercises=prompt('Exercises (separate with commas):'); if (!exercises) return; state.routines.push({id:`routine-${Date.now()}`,name:name.trim().slice(0,80),category:'My routine',exercises:exercises.split(',').map(s=>s.trim()).filter(Boolean).slice(0,12)}); save(); renderRoutines(); });
-    function renderAll() { renderDashboard(); renderCalendar(); renderRoutines(); renderMeals(); }
-    document.getElementById('meal-date').value=todayKey(); document.getElementById('nutrition-date').value=todayKey();
-    renderAll();
-  </script>
-</body>
+        <div class="nav-icon ghost" aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </div>
+      </nav>
+    </div>
+  </body>
 </html>
